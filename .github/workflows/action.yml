@@ -15,9 +15,7 @@ jobs:
         run: sudo apt-get install libcurl4-openssl-dev
       - name: configure
         run: ./configure
-      - run: mkdir build
-      - run: cd build
       - name: cmake with fetching
-        run: cmake -DUSE_EXTERNAL_DPP=OFF -DUSE_EXTERNAL_JSON=OFF .. -B./
+        run: cmake -DUSE_EXTERNAL_DPP=OFF -DUSE_EXTERNAL_JSON=OFF
       - name: make
         run: make

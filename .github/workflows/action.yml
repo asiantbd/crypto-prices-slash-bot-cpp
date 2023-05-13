@@ -1,0 +1,28 @@
+name: C/C++ CI
+
+on:
+  push:
+      branches: [ main ]
+  pull_request:
+      branches: [ main ]
+
+jobs:
+  build:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+
+      - name: curl
+      run: sudo apt-get install libcurl4-openssl-dev
+
+      - name: configure
+      run: ./configure
+
+      run: mkdir build
+      run: cd build
+
+      - name: cmake
+      run: cmake -DUSE_EXTERNAL_DPP=OFF -DUSE_EXTERNAL_JSON=OFF .. -B./
+
+      - name: make
+      run: make

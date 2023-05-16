@@ -28,7 +28,7 @@ This is a Discord bot that can be used to query crypto prices using the Coingeck
   cd crypto-prices-slash-bot-cpp
   mkdir build && cd build
 
-  cmake ..
+  cmake .. -B./
   make
   ```
 
@@ -46,9 +46,12 @@ This is a Discord bot that can be used to query crypto prices using the Coingeck
   cd crypto-prices-slash-bot-cpp
   mkdir build && cd build
 
-  cmake -DUSE_EXTERNAL_DPP=OFF -DUSE_EXTERNAL_JSON=OFF ..
+  cmake -DUSE_EXTERNAL_DPP=OFF -DUSE_EXTERNAL_JSON=OFF .. -B./
   make
   ```
+
+### Additional
+- In case you're got error while trying `make` that caused by `curl` try install it first. ex: `sudo apt-get install libcurl4-openssl-dev`
 
 ### Running the binary
 - Mandatory environment variable for Discord token: `DISCORD_TOKEN`

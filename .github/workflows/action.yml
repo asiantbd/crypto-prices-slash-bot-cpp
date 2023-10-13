@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: add curl
-        run: sudo apt-get install libcurl4-openssl-dev
-      - name: configure
+      - name: Install Dependencies
+        run: sudo apt-get update && apt-get install libcurl4-openssl-dev -y
+      - name: Apply Configure
         run: ./configure
-      - name: cmake with fetching
+      - name: Cmake With Fetching External Dependencies
         run: cmake -DUSE_EXTERNAL_DPP=OFF -DUSE_EXTERNAL_JSON=OFF
-      - name: make
+      - name: Make
         run: make

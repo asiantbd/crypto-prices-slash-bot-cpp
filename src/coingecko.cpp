@@ -92,8 +92,9 @@ void gecko::fetch_tokens(dpp::slashcommand_t event) {
     std::cout << ">> coingecko response: " << response_json << std::endl;
     std::string tokens;
     for (auto& token : response_json) {
-      tokens.append(to_string(token["id"]));
-      tokens.append(" ");
+      tokens.append("- ");
+      tokens.append(token["id"]);
+      tokens.append("\n");
     }
 
     event.reply(tokens);

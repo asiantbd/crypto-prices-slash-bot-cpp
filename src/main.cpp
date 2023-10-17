@@ -15,6 +15,9 @@ int main() {
     if (input == "coins") {
       gecko::fetch_tokens(event);
     }
+    if (input == "market") {
+      gecko::fetch_market_chart(event);
+    }
     return 0;
   });
 
@@ -36,6 +39,21 @@ int main() {
               dpp::command_option(dpp::co_string, "coingecko_id",
                                   "(Coingecko) ID of the token: ", true));
       bot.global_command_create(command_price);
+
+      dpp::slashcommand command_market;
+      command_market.set_name("market")
+          .set_description("Get market chart of a crypto token.")
+          .set_application_id(bot.me.id)
+          .add_option(
+              dpp::command_option(dpp::co_string, "token_id",
+                                  "(Coingecko) Id of the token: ", true))
+          .add_option(
+              dpp::command_option(dpp::co_string, "currency",
+                                  "(Coingecko) Currency for the price: ", true))
+          .add_option(dpp::command_option(
+              dpp::co_string, "days",
+              "(Coingecko) Duration market in days: ", true));
+      bot.global_command_create(command_market);
     }
   });
 

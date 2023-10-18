@@ -115,7 +115,6 @@ void gecko::fetch_tokens(dpp::slashcommand_t event) {
 void gecko::fetch_market_chart(dpp::slashcommand_t event) {
   std::string token_id = std::get<std::string>(event.get_parameter("token_id"));
   std::string currency = std::get<std::string>(event.get_parameter("currency"));
-  std::string days = std::get<std::string>(event.get_parameter("days"));
 
   CURL* curl = curl_easy_init();
   if (!curl) {
@@ -124,7 +123,7 @@ void gecko::fetch_market_chart(dpp::slashcommand_t event) {
   }
 
   std::string url = "https://api.coingecko.com/api/v3/coins/" + token_id +
-                    "/market_chart?vs_currency=" + currency + "&days=" + days;
+                    "/market_chart?vs_currency=" + currency + "&days=1";
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
   std::string response_data;
@@ -141,15 +140,16 @@ void gecko::fetch_market_chart(dpp::slashcommand_t event) {
 
   try {
     json response_json = json::parse(response_data);
-    // std::cout << "=============================" << std::endl;
-    // std::cout << ">> coingecko response: " << response_json << std::endl;
     std::vector<long> timestamps;
-    std::vector<long> prices;
-    for (auto& chart : response_json["market_caps"]) {
+    std::vector<double> prices;
+    for (auto& chart : response_json["prices"]) {
+      if (timestamps.size() == 250 && prices.size() == 250) {
+        break;
+      }
       timestamps.push_back(chart.at(0));
       prices.push_back(chart.at(1));
     }
-    auto chart = qchart::generate_chart("test", timestamps, "test", prices);
+    auto chart = qchart::generate_chart(timestamps, token_id, prices);
     event.reply(chart);
     std::cout << chart << std::endl;
 

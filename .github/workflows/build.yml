@@ -1,0 +1,34 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cmake:
+    name: CMake
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install libcurl4-openssl-dev -y
+      - name: Apply Configure
+        run: ./configure
+      - name: Cmake With Fetching External Dependencies
+        run: cmake -DUSE_EXTERNAL_DPP=OFF -DUSE_EXTERNAL_JSON=OFF
+      - name: Make
+        run: make
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Docker Build
+        run: |
+          docker build --platform=linux/amd64 -t asiantbd/crypto-prices-slash-bot .

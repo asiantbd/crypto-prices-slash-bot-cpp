@@ -6,6 +6,14 @@ This is a Discord bot that can be used to query crypto prices using the Coingeck
 - [DPP - C++ Discord API Bot Library](https://github.com/brainboxdotcc/DPP/)
 - [nlohmann_json](https://github.com/nlohmann/json)
 
+### Usage
+
+#### Docker
+
+```
+docker run -it --platform=linux/amd64 -e DISCORD_TOKEN=xxxxx ghcr.io/asiantbd/crypto-prices-slash-bot:latest
+```
+
 ### Build
 
 #### Build Using External Precompiled Dependency (Recommended)

@@ -1,0 +1,7 @@
+services:
+  crypto-prices-slash-bot:
+    image: ghcr.io/asiantbd/crypto-prices-slash-bot:latest
+    restart: unless-stopped
+    platform: linux/amd64
+    environment:
+      - DISCORD_TOKEN=xxxx.xxxx

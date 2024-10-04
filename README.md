@@ -14,6 +14,12 @@ This is a Discord bot that can be used to query crypto prices using the Coingeck
 docker run -it --platform=linux/amd64 -e DISCORD_TOKEN=xxxxx ghcr.io/asiantbd/crypto-prices-slash-bot:latest
 ```
 
+or
+
+```
+docker compose -f docker-compose.yml up
+```
+
 ### Build
 
 #### Build Using External Precompiled Dependency (Recommended)

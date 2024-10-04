@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <locale>
 #include <sstream>
+#include <string>
 
 using json = nlohmann::json;
 
@@ -17,6 +18,20 @@ std::locale get_locale(const std::string& name) {
         return std::locale::classic();
     }
 }
+
+// Determine precision value from str
+int determine_precision_from_str(std::string value) {
+    // Find the decimal point
+    size_t decimal_pos = value.find('.');
+    if (decimal_pos == std::string::npos) return 0;  // No decimal point
+
+    // Calculate precision
+    int precision = value.length() - decimal_pos - 1;
+
+    // Ensure precision is under 10
+    return std::max(0, std::min(precision, 10));
+}
+
 // This callback function is called by curl_easy_perform() to write the response
 // data into a string
 size_t gecko::write_callback(char* ptr, size_t size, size_t nmemb,
@@ -75,17 +90,22 @@ void gecko::fetch_price(dpp::slashcommand_t event) {
 
   // Format response value
   try {
+    // Use std::string to determine precision point
+    // without converting to <double> first -- converting may have default precision point.
+    std::string usd_value_str = to_string(response_json[coingecko_id]["usd"]);
+    std::string idr_value_str = to_string(response_json[coingecko_id]["idr"]);
+
     // Format USD
     std::stringstream ss_usd;
     ss_usd.imbue(get_locale("en_US.UTF-8"));
-    ss_usd << std::fixed << std::setprecision(2)
-            << response_json[coingecko_id]["usd"].get<double>();
+    ss_usd << std::fixed << std::setprecision(determine_precision_from_str(usd_value_str))
+            << std::stod(usd_value_str);
 
     // Format IDR
     std::stringstream ss_idr;
     ss_idr.imbue(get_locale("id_ID.UTF-8"));
-    ss_idr << std::fixed << std::setprecision(2)
-            << response_json[coingecko_id]["idr"].get<double>();
+    ss_idr << std::fixed << std::setprecision(determine_precision_from_str(idr_value_str))
+            << std::stod(idr_value_str);
 
     // Reply to Discord
     event.reply(":information_source: " + coingecko_id +

@@ -43,7 +43,15 @@ RUN apt-get update && apt-get install -y \
     libopus-dev \
     libsodium-dev \
     libcurl4-openssl-dev \
+    locales \
     && rm -rf /var/lib/apt/lists/*
+
+# Configure Locale (for currency formatting)
+# Check available locale: `locale -a`
+RUN /bin/bash -c 'echo -e "\
+    en_US.UTF-8 UTF-8\n\
+    id_ID.UTF-8 UTF-8" \
+    > /etc/locale.gen && locale-gen'
 
 # Create a non-root user
 RUN useradd -m -s /bin/bash appuser

@@ -1,7 +1,36 @@
 #include <coingecko.h>
+#include <exception>
 #include <quickchart.h>
+#include <iomanip>
+#include <locale>
+#include <sstream>
+#include <string>
 
 using json = nlohmann::json;
+
+// Function to set locale (currency format) settings
+// Return locale::classic() if desired locale not available on running system
+std::locale get_locale(const std::string& name) {
+    try {
+        return std::locale(name);
+    } catch (const std::runtime_error&) {
+        std::cerr << "Warning: Locale '" << name << "' not available. Using classic locale." << std::endl;
+        return std::locale::classic();
+    }
+}
+
+// Determine precision value from str
+int determine_precision_from_str(std::string value) {
+    // Find the decimal point
+    size_t decimal_pos = value.find('.');
+    if (decimal_pos == std::string::npos) return 0;  // No decimal point
+
+    // Calculate precision
+    int precision = value.length() - decimal_pos - 1;
+
+    // Ensure precision is under 10
+    return std::max(0, std::min(precision, 10));
+}
 
 // This callback function is called by curl_easy_perform() to write the response
 // data into a string
@@ -43,15 +72,11 @@ void gecko::fetch_price(dpp::slashcommand_t event) {
   }
 
   // Parse the JSON response
+  json response_json;
   try {
-    json response_json = json::parse(response_data);
+    response_json = json::parse(response_data);
     std::cout << "=============================" << std::endl;
     std::cout << ">> coingecko response: " << response_json << std::endl;
-
-    // Reply to Discord
-    event.reply(":information_source: " + coingecko_id + " price: $" +
-                to_string(response_json[coingecko_id]["usd"]) + " / Rp. " +
-                to_string(response_json[coingecko_id]["idr"]));
 
   } catch (const std::exception& e) {
     std::cerr << "Error: failed to parse JSON response: " << e.what()
@@ -61,6 +86,40 @@ void gecko::fetch_price(dpp::slashcommand_t event) {
     // Reply to Discord
     event.reply(coingecko_id +
                 ":exclamation: price: error failed to call API data.");
+  }
+
+  // Format response value
+  try {
+    // Use std::string to determine precision point
+    // without converting to <double> first -- converting may have default precision point.
+    std::string usd_value_str = to_string(response_json[coingecko_id]["usd"]);
+    std::string idr_value_str = to_string(response_json[coingecko_id]["idr"]);
+
+    // Format USD
+    std::stringstream ss_usd;
+    ss_usd.imbue(get_locale("en_US.UTF-8"));
+    ss_usd << std::fixed << std::setprecision(determine_precision_from_str(usd_value_str))
+            << std::stod(usd_value_str);
+
+    // Format IDR
+    std::stringstream ss_idr;
+    ss_idr.imbue(get_locale("id_ID.UTF-8"));
+    ss_idr << std::fixed << std::setprecision(determine_precision_from_str(idr_value_str))
+            << std::stod(idr_value_str);
+
+    // Reply to Discord
+    event.reply(":information_source: " + coingecko_id +
+                " price: $" +  ss_usd.str() +
+                " / Rp." + ss_idr.str());
+
+  } catch (const std::exception& e) {
+    std::cerr << "Error: failed to parse currency value: " << e.what()
+            << std::endl;
+    curl_easy_cleanup(curl);
+
+    // Reply to Discord
+    event.reply(coingecko_id +
+                ":exclamation: price: formatting error.");
   }
 
   curl_easy_cleanup(curl);

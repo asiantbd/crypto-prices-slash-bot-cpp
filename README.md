@@ -23,7 +23,7 @@ docker compose -f docker-compose.yml up
 ### Build
 
 #### Build Using External Precompiled Dependency (Recommended)
-- Install Precompiled Lib (Debian, Ubuntu, Derivatives), check [this link](https://dpp.dev/10.0.23/md_docpages_01_installing.html) for other distro.
+- Install Precompiled Lib (Debian, Ubuntu, Derivatives), check [this link](https://dpp.dev/installing.html) for other distro.
 
   DPP:
   ```
@@ -63,6 +63,19 @@ docker compose -f docker-compose.yml up
   cmake -DUSE_EXTERNAL_DPP=OFF -DUSE_EXTERNAL_JSON=OFF .. -B./
   make
   ```
+
+### Available Commands
+
+The bot supports the following slash commands:
+
+#### Price Query
+Get cryptocurrency prices in USD and IDR:
+- Using CoinGecko ID: `/price coingecko_id:bitcoin`
+- Using ticker symbol: `/price ticker:btc` or `/price ticker:$BTC`
+
+Note: When multiple coins share the same ticker (e.g., "ETH" for both Ethereum and Ethereum Classic),
+a dropdown menu will appear allowing you to select the specific coin.
+
 
 ### Additional
 - In case you're got error while trying `make` that caused by `curl` try install it first. ex: `sudo apt-get install libcurl4-openssl-dev`

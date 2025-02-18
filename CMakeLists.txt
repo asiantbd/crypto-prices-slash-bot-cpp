@@ -12,12 +12,12 @@ option(USE_EXTERNAL_DPP "Use an external DPP library" ON)
 option(USE_EXTERNAL_JSON "Use an external JSON library" ON)
 
 if(USE_EXTERNAL_DPP)
-  find_package(dpp 10.0.23 REQUIRED)
+  find_package(dpp 10.1.0 REQUIRED)
 else()
   FetchContent_Declare(
     dpp
     GIT_REPOSITORY https://github.com/brainboxdotcc/DPP.git
-    GIT_TAG        v10.0.23
+    GIT_TAG        v10.1.0
   )
   FetchContent_MakeAvailable(dpp)
 endif()
@@ -64,3 +64,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 #Set Linker flags
 set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+
+# Generate compile_commands.json automatically for clangd
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

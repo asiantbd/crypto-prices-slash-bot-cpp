@@ -28,7 +28,7 @@ RUN mkdir build
 
 # Build the project
 WORKDIR /app/build
-RUN wget -O libdpp.deb https://github.com/brainboxdotcc/DPP/releases/download/v10.0.23/libdpp-10.0.23-linux-x64.deb \
+RUN wget -O libdpp.deb https://github.com/brainboxdotcc/DPP/releases/download/v10.1.0/libdpp-10.1.0-linux-x64.deb \
     && dpkg -i libdpp.deb \
     && ldconfig
 RUN cmake -DUSE_EXTERNAL_JSON=OFF .. -B./ && make

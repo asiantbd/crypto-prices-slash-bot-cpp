@@ -8,6 +8,9 @@
 
 using json = nlohmann::json;
 
+// CoinGecko requires a descriptive User-Agent or it returns HTTP 403.
+static const char* kUserAgent = "crypto-prices-slash-bot-cpp/1.0 (+https://github.com/asiantbd/crypto-prices-slash-bot-cpp)";
+
 // Function to set locale (currency format) settings
 // Return locale::classic() if desired locale not available on running system
 std::locale get_locale(const std::string& name) {
@@ -77,6 +80,7 @@ void gecko::fetch_price(dpp::slashcommand_t event) {
         std::string list_response;
 
         curl_easy_setopt(list_curl, CURLOPT_URL, list_url.c_str());
+        curl_easy_setopt(list_curl, CURLOPT_USERAGENT, kUserAgent);
         curl_easy_setopt(list_curl, CURLOPT_WRITEFUNCTION, write_callback);
         curl_easy_setopt(list_curl, CURLOPT_WRITEDATA, &list_response);
 
@@ -184,6 +188,7 @@ void gecko::fetch_single_price(const std::string& coingecko_id, const dpp::inter
 
     std::string response_data;
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_USERAGENT, kUserAgent);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_data);
 
@@ -319,6 +324,7 @@ void gecko::fetch_tokens(dpp::slashcommand_t event) {
 
   std::string url = "https://api.coingecko.com/api/v3/coins/";
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+  curl_easy_setopt(curl, CURLOPT_USERAGENT, kUserAgent);
 
   std::string response_data;
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
@@ -369,6 +375,7 @@ void gecko::fetch_market_chart(dpp::slashcommand_t event) {
   std::string url = "https://api.coingecko.com/api/v3/coins/" + token_id +
                     "/market_chart?vs_currency=" + currency + "&days=1";
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+  curl_easy_setopt(curl, CURLOPT_USERAGENT, kUserAgent);
 
   std::string response_data;
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);

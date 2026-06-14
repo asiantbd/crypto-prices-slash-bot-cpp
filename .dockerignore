@@ -1,0 +1,15 @@
+# Build artifacts (regenerated inside the image)
+build/
+
+# Version control & local tooling
+.git/
+.gitignore
+.clangd
+
+# Local data dumps
+coingecko-list.json
+
+# Editor / OS cruft
+.vscode/
+.idea/
+.DS_Store
